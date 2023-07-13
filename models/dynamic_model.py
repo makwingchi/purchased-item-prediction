@@ -36,7 +36,7 @@ class DynamicModel(RecModel):
         model.eval()
 
         label, features = self.create_feeds(batch_data)
-        pred = model.forward(features)
+        pred = model.forward(features[0])
 
         # predict_2d = paddle.concat(x=[1 - pred, pred], axis=1)
         metric_list[0].update(preds=pred.numpy(), labels=label.numpy())
