@@ -1,0 +1,47 @@
+# Folder
+/data/*
+/测试集a
+/测试集b
+/训练集
+
+# Files
+*.csv
+*.txt
+
+# IDE Config
+.idea/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Folder view configuration files
+.DS_Store
+Desktop.ini
+
+# Thumbnail cache files
+._*
+Thumbs.db
+
+# Files that might appear on external disks
+.Spotlight-V100
+.Trashes
+
+# Compiled Python files
+*.pyc
+
+# Application specific files
+venv
+node_modules
+.sass-cache
+
+# Poetry
+poetry.lock
+# pyproject.toml
+
+# Tensorboard meta files
+tensorboard_tmp/
+
+# paddle model outputs
+*.pdmodel
+*.pdopt
+*.pdparams
