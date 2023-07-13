@@ -45,16 +45,17 @@ if __name__ == "__main__":
     # task_type = config["runner"]["task_type"]
     processed_train_path = config['runner']['processed_train']
     processed_test_path = config['runner']['processed_test']
+    sampling_rate = config['runner']['sampling_rate']
 
     user_ls, goods_ls = [], []
     if not os.path.exists(processed_train_path):
         logger.info('---------------->> genereate training set <<----------------')
         vdp = VIPDataProcessor(config, mode='train')
         train_data, user_ls, goods_ls = vdp.fe_process(save=True)
-        logger.info('---------------->>     genereate end      <<----------------')
+        logger.info('---------------->>     genereate end     <<----------------')
         del vdp
     else:
-        logger.info('---------------->>   load training set    <<----------------')
+        logger.info('---------------->>   load training set   <<----------------')
         train_data = pd.read_csv(os.path.join(processed_train_path, 'data.csv')).reset_index(drop=True)
 
     if not os.path.exists(processed_test_path):
@@ -102,6 +103,11 @@ if __name__ == "__main__":
     model = model_class.create_model()
     optimizer = model_class.create_optimizer(model)
 
+    neg = train_data[train_data['is_order_max'] == 0].sample(frac=sampling_rate)
+    pos = train_data[train_data['is_order_max'] != 0]
+
+    train_data = pd.concat([pos, neg]).sample(frac=1).reset_index(drop=True)
+
     for epoch_id in range(num_epochs):
         model.train()
         metric_list, metric_list_name = model_class.create_metrics()
@@ -114,7 +120,7 @@ if __name__ == "__main__":
         reader_start = time.time()
 
         step_num = 0
-        loader = get_batch_data(config, train_data)
+        loader = get_batch_data(config, train_data, mode='train')
         for batch_id, batch in enumerate(loader):
             train_reader_cost += time.time() - reader_start
             optimizer.clear_grad()

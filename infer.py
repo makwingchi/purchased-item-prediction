@@ -80,7 +80,7 @@ if __name__ == "__main__":
 
     model = model_class.create_model()
 
-    loader = get_batch_data(config, test_data, mode='infer')
+    loader = get_batch_data(config, test_data, mode='test')
 
     epoch_begin = time.time()
     interval_begin = time.time()
@@ -118,7 +118,8 @@ if __name__ == "__main__":
 
                 metric_str = ""
                 for metric_id in range(len(metric_list_name)):
-                    metric_str += (metric_list_name[metric_id] + ": {:.6f},".format(metric_list[metric_id].accumulate()))
+                    metric_str += (
+                                metric_list_name[metric_id] + ": {:.6f},".format(metric_list[metric_id].accumulate()))
 
                 logger.info(
                     "epoch: {}, batch_id: {}, ".format(epoch_id, batch_id) + metric_str + tensor_print_str +
@@ -138,8 +139,8 @@ if __name__ == "__main__":
 
         metric_str = ""
 
-        f1 = f1_score(metric_list[0].accumulate(), metric_list[1].accumulate())
-        metric_str += ('F1' + ":{:.6f}, ".format(f1))
+        # f1 = f1_score(metric_list[0].accumulate(), metric_list[1].accumulate())
+        metric_str += ('F1' + ":{:.6f}, ".format(0))
         metric_list[0].reset()
         metric_list[1].reset()
 
@@ -149,7 +150,8 @@ if __name__ == "__main__":
                 tensor_print_str += ("{}:".format(var_name) + str(var.numpy()).strip("[]") + ",")
 
         logger.info(
-            "epoch: {} done, ".format(epoch_id) + metric_str + tensor_print_str + " epoch time: {:.2f} s".format(time.time() - epoch_begin)
+            "epoch: {} done, ".format(epoch_id) + metric_str + tensor_print_str + " epoch time: {:.2f} s".format(
+                time.time() - epoch_begin)
         )
         epoch_begin = time.time()
 
