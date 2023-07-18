@@ -4,7 +4,12 @@ import pandas as pd
 
 from multi_pool import run_multi_pool
 
+"""
+Feature 1b  (removed)
+"""
 
+
+@DeprecationWarning
 def get_top_user_behavior_sequence(i):
     training = pd.read_csv("./训练集/training_data.csv")
     training["timestamp"] = pd.to_datetime(training["timestamp"], format="%Y-%m-%d %H:%M:%S")
@@ -104,4 +109,3 @@ def get_top_user_behavior_sequence(i):
 
 if __name__ == "__main__":
     run_multi_pool(get_top_user_behavior_sequence, file_name="top_user_behavior_sequence")
-    

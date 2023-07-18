@@ -1,3 +1,5 @@
+import datetime
+
 import pandas as pd
 
 from multi_pool import run_multi_pool
@@ -17,10 +19,16 @@ def count_max_no(rows):
     return 0 if len(res) == 0 else max(res)
 
 
+"""
+Feature 14
+"""
+
+FILE_NAME = "user_continuous_behavior"
+
+
 def get_user_continuous_behavior(i):
     data = pd.read_csv(f"./训练集/users/part_{i:02d}.csv")
     data["timestamp"] = pd.to_datetime(data["timestamp"], format="%Y-%m-%d %H:%M:%S")
-    data["dt"] = pd.to_datetime(data["dt"], format="%Y-%m-%d")
 
     data.sort_values(["user_id", "timestamp"], inplace=True, ignore_index=True)
 
@@ -32,6 +40,10 @@ def get_user_continuous_behavior(i):
     }
 
     for idx, row in data.iterrows():
+        if idx % 5000 == 0:
+            print(f"{idx} of {i:02d}")
+            print(datetime.datetime.now())
+
         features["instance_id"].append(row["instance_id"])
 
         before = data[data["timestamp"].lt(row["timestamp"]) & data["user_id"].eq(row["user_id"])]
@@ -59,8 +71,13 @@ def get_user_continuous_behavior(i):
         features["max_no_addcart"].append(counts["is_addcart"].item())
         features["max_no_order"].append(counts["is_order"].item())
 
+    print(f"finish processing part_{i:02d}")
+    pd.DataFrame(features).to_csv(f"./训练集/{FILE_NAME}/part_{i:02d}.csv", index=False)
+    print(f"part_{i:02d} saved")
+
     return pd.DataFrame(features)
 
 
 if __name__ == "__main__":
-    run_multi_pool(get_user_continuous_behavior, file_name="user_continuous_behavior")
+    run_multi_pool(get_user_continuous_behavior, file_name=FILE_NAME, processor=range(10))
+    # get_user_continuous_behavior(0)

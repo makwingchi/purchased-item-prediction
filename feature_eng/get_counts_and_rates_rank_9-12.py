@@ -1,3 +1,5 @@
+import datetime
+
 import pandas as pd
 
 from multi_pool import run_multi_pool
@@ -24,14 +26,23 @@ def calculate(before, field):
     return curr
 
 
+"""
+Features 9-12 (removed)
+"""
+
+FILE_NAME = "counts_and_rates_rank"
+
+
 def get_counts_and_rates_rank(i):
     training = pd.read_csv("./训练集/training_data.csv")
     training["timestamp"] = pd.to_datetime(training["timestamp"], format="%Y-%m-%d %H:%M:%S")
-    training["dt"] = pd.to_datetime(training["dt"], format="%Y%m%d")
+
+    training["timestamp"] = training["timestamp"].astype(int) // 10 ** 9
 
     data = pd.read_csv(f"./训练集/users/part_{i:02d}.csv")
     data["timestamp"] = pd.to_datetime(data["timestamp"], format="%Y-%m-%d %H:%M:%S")
-    data["dt"] = pd.to_datetime(data["dt"], format="%Y-%m-%d")
+
+    data["timestamp"] = data["timestamp"].astype(int) // 10 ** 9
 
     features = {
         "instance_id": [],
@@ -65,8 +76,15 @@ def get_counts_and_rates_rank(i):
         "category_order_rate_rank": [],
     }
 
+    timestamp_arr = training["timestamp"].to_numpy()
+
     for idx, row in data.iterrows():
-        before = training[training["timestamp"].lt(row["timestamp"])].reset_index(drop=True)
+        if idx % 50 == 0:
+            print(idx)
+            print(datetime.datetime.now())
+
+        indices = timestamp_arr < row["timestamp"]
+        before = training.loc[indices, :].reset_index(drop=True)
 
         before_user = calculate(before, "user_id")
         before_item = calculate(before, "goods_id")
@@ -145,8 +163,13 @@ def get_counts_and_rates_rank(i):
         features["category_addcart_rate_rank"].append(category_addcart_rate_rank)
         features["category_order_rate_rank"].append(category_order_rate_rank)
 
+    print(f"finish processing part_{i:02d}")
+    pd.DataFrame(features).to_csv(f"./训练集/{FILE_NAME}/part_{i:02d}.csv", index=False)
+    print(f"part_{i:02d} saved")
+
     return pd.DataFrame(features)
 
 
 if __name__ == "__main__":
-    run_multi_pool(get_counts_and_rates_rank, file_name="counts_and_rates_rank")
+    run_multi_pool(get_counts_and_rates_rank, file_name=FILE_NAME)
+    # get_counts_and_rates_rank(0)
