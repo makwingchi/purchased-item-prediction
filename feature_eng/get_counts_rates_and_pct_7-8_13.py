@@ -14,7 +14,7 @@ FILE_NAME = "counts_and_rates"
 
 
 def get_counts_rates_and_pct(i):
-    training = pd.read_csv("./训练集/training_data.csv")
+    training = pd.read_csv("../训练集/training_data.csv")
     training["timestamp"] = pd.to_datetime(training["timestamp"], format="%Y-%m-%d %H:%M:%S")
 
     training["timestamp"] = training["timestamp"].astype(int) // 10 ** 9

@@ -11,7 +11,7 @@ Feature 1b  (removed)
 
 @DeprecationWarning
 def get_top_user_behavior_sequence(i):
-    training = pd.read_csv("./训练集/training_data.csv")
+    training = pd.read_csv("../训练集/training_data.csv")
     training["timestamp"] = pd.to_datetime(training["timestamp"], format="%Y-%m-%d %H:%M:%S")
     training["dt"] = pd.to_datetime(training["dt"], format="%Y%m%d")
 

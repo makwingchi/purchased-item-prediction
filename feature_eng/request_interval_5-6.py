@@ -3,7 +3,7 @@ import datetime
 import numpy as np
 import pandas as pd
 
-from multi_pool import run_multi_pool
+from feature_eng.multi_pool import run_multi_pool
 
 
 FILE_NAME = "request_interval"

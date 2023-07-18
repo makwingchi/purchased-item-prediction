@@ -14,7 +14,7 @@ FILE_NAME = "counts_and_rates_combo"
 
 
 def get_combo_counts_and_rates(i):
-    training = pd.read_csv("./训练集/training_data.csv")
+    training = pd.read_csv("../训练集/training_data.csv")
     training["timestamp"] = pd.to_datetime(training["timestamp"], format="%Y-%m-%d %H:%M:%S")
 
     training["timestamp"] = training["timestamp"].astype(int) // 10 ** 9

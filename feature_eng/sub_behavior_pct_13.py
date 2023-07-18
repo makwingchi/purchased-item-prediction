@@ -1,9 +1,6 @@
 import datetime
 import pandas as pd
 
-from multi_pool import run_multi_pool
-
-
 """
 Feature 13 (integrated in get_counts_rates_and_pct_7-8_13)
 """
@@ -12,7 +9,7 @@ FILE_NAME = "sub_behavior_pct"
 
 
 def get_sub_behavior_pct(i):
-    training = pd.read_csv("./训练集/training_data.csv")
+    training = pd.read_csv("../训练集/training_data.csv")
     training["timestamp"] = pd.to_datetime(training["timestamp"], format="%Y-%m-%d %H:%M:%S")
 
     training["timestamp"] = training["timestamp"].astype(int) // 10 ** 9
